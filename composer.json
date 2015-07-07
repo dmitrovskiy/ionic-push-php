@@ -30,7 +30,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Dmitrovskiy\\IonicPush\\Test\\": "tests"
+      "Dmitrovskiy\\IonicPush\\Tests\\": "tests"
     }
   }
 }
