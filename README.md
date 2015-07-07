@@ -1,9 +1,5 @@
 # Ionic push php sdk
 
-[![Latest Version on Packagist][ico-version]][https://packagist.org/packages/dmitrovskiy/ionic-push-php#dev-master]
-[![Software License][ico-license]](LICENSE.md)
-[![Quality Score][ico-code-quality]][link-code-quality]
-
 This package may be helpful for sending ionic push notifications
 
 ## Install
