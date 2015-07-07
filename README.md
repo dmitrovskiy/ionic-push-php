@@ -21,11 +21,13 @@ $pusher = new Dmitrovskiy\IonicPush\PushProcessor(
     'APP_ID',
     'API_SECRET_ID'
 );
+
+$notifications = array(
+    //...
+);
+
+$pusher->notify($notifications);
 ```
-
-## Change log
-
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
 
 ## License
 
