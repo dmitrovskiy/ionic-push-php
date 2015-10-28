@@ -18,11 +18,15 @@ $pusher = new Dmitrovskiy\IonicPush\PushProcessor(
     'API_SECRET_ID'
 );
 
-$notifications = array(
+$devices = array(
     //...
 );
 
-$pusher->notify($notifications);
+$notification = array(
+    //...
+);
+
+$pusher->notify($devices, $notification);
 ```
 
 ## License
