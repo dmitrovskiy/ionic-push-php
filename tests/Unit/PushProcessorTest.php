@@ -4,41 +4,42 @@ namespace Dmitrovskiy\IonicPush\Tests\Unit;
 
 use Dmitrovskiy\IonicPush\PushProcessor;
 use Dmitrovskiy\IonicPush\Tests\TestCase;
+use Psr\Http\Message\ResponseInterface;
 
 class PushProcessorTest extends TestCase
 {
 
     public function testCreation()
     {
-        $instance = new PushProcessor('appId', 'appSecret');
+        $instance = new PushProcessor('profile', 'token');
         $this->assertNotNull($instance);
     }
 
-    public function testGetAppId()
+    public function testGetProfile()
     {
-        $appId = 'appId';
-        $instance = new PushProcessor($appId, 'appSecret');
-        $this->assertEquals($instance->getAppId(), $appId);
+        $profile = 'profile';
+        $instance = new PushProcessor($profile, 'token');
+        $this->assertEquals($instance->getProfile(), $profile);
     }
 
     public function testGetAppApiSecret()
     {
-        $appApiSecret = 'appSecret';
-        $instance = new PushProcessor('appId', $appApiSecret);
-        $this->assertEquals($instance->getAppApiSecret(), $appApiSecret);
+        $token = 'token';
+        $instance = new PushProcessor('profile', $token);
+        $this->assertEquals($instance->getToken(), $token);
     }
 
     public function testGetPushEndPoint()
     {
         $pushEndPoint = 'testEndPoint';
-        $instance = new PushProcessor('appId', 'appSecret', $pushEndPoint);
+        $instance = new PushProcessor('profile', 'token', $pushEndPoint);
         $this->assertEquals($instance->getPushEndPoint(), $pushEndPoint);
     }
 
     public function testSetPushEndPoint()
     {
         $newEndPoint = 'newEndPoint';
-        $instance = new PushProcessor('appId', 'appSecret');
+        $instance = new PushProcessor('profile', 'token');
         $instance->setPushEndPoint($newEndPoint);
 
         $this->assertEquals($instance->getPushEndPoint(), $newEndPoint);
@@ -49,7 +50,7 @@ class PushProcessorTest extends TestCase
      */
     public function testNotifyPermissionDenied()
     {
-        $instance = new PushProcessor('appID', 'appEndPoint');
+        $instance = new PushProcessor('profile', 'token');
         $instance->notify(array(), array());
     }
 
@@ -59,8 +60,20 @@ class PushProcessorTest extends TestCase
     public function testNotifyFailedRequest()
     {
         $instance = new PushProcessor(
-            'appID', 'appEndPoint', 'wrong http address'
+            'profile', 'token', 'wrong http address'
         );
         $instance->notify(array(), array());
+    }
+
+    public function testNotifySuccess(){
+        $credentials = require __DIR__. '/../credentials.php';
+        $instance = new PushProcessor(
+            $credentials['profile'], $credentials['token']
+        );
+        /** @var ResponseInterface $response */
+        $response = $instance->notify($credentials['device_tokens'],[
+            'message' => 'Hello World!!'
+        ]);
+        $this->assertEquals(201,$response->getStatusCode());
     }
 }

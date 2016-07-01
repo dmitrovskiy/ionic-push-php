@@ -3,3 +3,4 @@ vendor
 .idea
 build
 docs
+phpunit.xml
