@@ -14,8 +14,8 @@ $ composer require dmitrovskiy/ionic-push-php
 
 ``` php
 $pusher = new Dmitrovskiy\IonicPush\PushProcessor(
-    'APP_ID',
-    'API_SECRET_ID'
+    'PROFILE',
+    'AUTHORIZATION_TOKEN'
 );
 
 $devices = array(
