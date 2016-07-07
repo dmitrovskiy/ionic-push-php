@@ -17,37 +17,37 @@ use GuzzleHttp\Psr7\Request;
 class PushProcessor
 {
     /** @var string */
-    protected $appId;
+    protected $profile;
 
     /** @var string */
-    protected $appApiSecret;
+    protected $token;
 
     /** @var string */
     protected $ionicPushEndPoint;
 
     /**
-     * @param string $appId
-     * @param string $appApiSecret
+     * @param string $profile
+     * @param string $token
      * @param string $ionicPushEndPoint
      */
     public function __construct(
-        $appId,
-        $appApiSecret,
-        $ionicPushEndPoint = 'https://push.ionic.io/api/v1/push'
+        $profile,
+        $token,
+        $ionicPushEndPoint = 'https://api.ionic.io/push/notifications'
     ) {
-        $this->appId = $appId;
-        $this->appApiSecret = $appApiSecret;
+        $this->profile = $profile;
+        $this->token = $token;
         $this->ionicPushEndPoint = $ionicPushEndPoint;
     }
 
-    public function getAppId()
+    public function getProfile()
     {
-        return $this->appId;
+        return $this->profile;
     }
 
-    public function getAppApiSecret()
+    public function getToken()
     {
-        return $this->appApiSecret;
+        return $this->token;
     }
 
     public function getPushEndPoint()
@@ -76,13 +76,11 @@ class PushProcessor
 
     protected function getNotificationHeaders()
     {
-        $encodedApiSecret = $this->getEncodedApiSecret();
-        $authorization = sprintf("Basic %s", $encodedApiSecret);
+        $authorization = sprintf("Bearer %s", $this->getToken());
 
         return array(
             'Authorization'          => $authorization,
-            'Content-Type'           => 'application/json',
-            'X-Ionic-Application-Id' => $this->appId
+            'Content-Type'           => 'application/json'
         );
     }
 
@@ -95,6 +93,7 @@ class PushProcessor
     protected function getNotificationBody(array $devices, array $notification)
     {
         $body = array(
+            'profile' => $this->getProfile(),
             'tokens'       => $devices,
             'notification' => $notification
         );
@@ -126,9 +125,10 @@ class PushProcessor
             return $response;
         } catch (ClientException $e) {
             switch ($e->getCode()) {
+                case 401:
                 case 403: {
                     throw new PermissionDeniedException(
-                        "Permission denied sending push", 403, $e
+                        "Permission denied sending push", $e->getCode(), $e
                     );
                 }
                 case 400: {
@@ -146,10 +146,5 @@ class PushProcessor
         }
 
         return null;
-    }
-
-    protected function getEncodedApiSecret()
-    {
-        return base64_encode($this->appApiSecret . ':');
     }
 }
